@@ -23,10 +23,14 @@ class JobsOrm(Base):
         index=True,
     )
     job_type: Mapped[JobType] = mapped_column(
-        String(20),
-        nullable=False,
+        Enum(
+            JobType,
+            values_callable=lambda enum: [e.value for e in enum],
+            name="jobtype",
+        ),
+        nullable=False
     )
-    status: Mapped[JobStatus] = mapped_column(
+    job_status: Mapped[JobStatus] = mapped_column(
         Enum(JobStatus),
         nullable=False,
     )

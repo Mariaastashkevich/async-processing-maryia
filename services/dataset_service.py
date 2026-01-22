@@ -1,22 +1,22 @@
 import os
+import uuid
 
-from sqlalchemy.orm import Session
 from db.enums import Status
 from db.models.datasets import DatasetsOrm
-from schemas.CreateDataset import CreateDatasetSchema
+from repositories.interfaces.datasets import DatasetRepository
+from schemas.dataset_schemas.create_dataset import CreateDatasetSchema
 from services.settings import settings
 from services.storage.storage_service import StorageService
 
 
 class DatasetService:
-    def __init__(self, session: Session, storage: StorageService):
-        self.session = session
+    def __init__(self, storage: StorageService, repo: DatasetRepository):
         self.storage = storage
-
+        self.repo = repo
 
     def create(self, data: CreateDatasetSchema) -> DatasetsOrm:
         bucket = settings.S3_DATASETS_BUCKET
-        file_name = f"{data.name}.{data.format.value}"
+        file_name = settings.STORAGE_UPLOADS_DIR / f"{data.name}.{data.format.value}"
         size_bytes = os.path.getsize(file_name)
         key = f"{data.owner_id}/{data.name}.{data.format.value}"
 
@@ -35,9 +35,12 @@ class DatasetService:
             file_name=file_name,
         )
 
-        self.session.add(dataset)
-        self.session.flush()
+        self.repo.add(dataset)
         return dataset
+
+    def get_dataset(self, dataset_id: uuid.UUID) -> DatasetsOrm | None:
+        return self.repo.get(dataset_id)
+
 
 
 

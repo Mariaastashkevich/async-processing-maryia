@@ -1,0 +1,8 @@
+{
+  "metrics": {
+    "rows": 1000,
+    "columns": 9,
+    "null_ratio": 0.001,
+    "duplicates": 998
+  }
+}

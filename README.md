@@ -399,7 +399,3 @@ ruff check --fix .
 - Check `alembic.ini` configuration
 - Verify database URL in `.env` matches `alembic/env.py` expectations
 - Review migration files in `alembic/versions/` for errors
-
-## License
-
-[Add your license here]
